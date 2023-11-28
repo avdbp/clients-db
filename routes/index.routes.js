@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
+const isLoggedIn = require("../middleware/isLoggedIn");
+
 const Client = require('../models/Client.model');
 
 // Middleware para parsear datos del formulario
 router.use(express.urlencoded({ extended: true }));
 
 // Ruta para mostrar la vista de creación de clientes
-router.get('/', (req, res) => {
+router.get('/', isLoggedIn, (req, res) => {
   res.render('createClientForm'); // Nombre del archivo HBS para el formulario
 });
 
 // Ruta para manejar la creación de clientes desde el formulario
-router.post('/clients/create', async (req, res) => {
+router.post('/clients/create', isLoggedIn, async (req, res) => {
   try {
     // Obtén los datos del formulario
     const { name, phone, email, dataContact, city, observations } = req.body;
@@ -29,7 +31,7 @@ router.post('/clients/create', async (req, res) => {
 });
 
 // Ruta para mostrar la lista de clientes
-router.get('/clients', async (req, res) => {
+router.get('/clients', isLoggedIn,  async (req, res) => {
   try {
     // Obtiene todos los clientes de la base de datos
     const clients = await Client.find();
@@ -44,7 +46,7 @@ router.get('/clients', async (req, res) => {
 });
 
 // Ruta para mostrar los detalles de un cliente específico
-router.get('/clients/details/:clientId', async (req, res) => {
+router.get('/clients/details/:clientId',  async (req, res) => {
   try {
     // Obtén el ID del cliente desde los parámetros de la URL
     const clientId = req.params.clientId;
@@ -68,7 +70,7 @@ router.get('/clients/details/:clientId', async (req, res) => {
 });
 
 // Ruta para mostrar el formulario de edición de un cliente
-router.get('/clients/edit/:clientId', async (req, res) => {
+router.get('/clients/edit/:clientId',  async (req, res) => {
   try {
     // Obtén el ID del cliente desde los parámetros de la URL
     const clientId = req.params.clientId;
@@ -92,7 +94,8 @@ router.get('/clients/edit/:clientId', async (req, res) => {
 });
 
 // Ruta para manejar la actualización de un cliente desde el formulario de edición
-router.post('/clients/edit/:clientId', async (req, res) => {
+// Ruta para manejar la actualización de un cliente desde el formulario de edición
+router.post('/clients/edit/:clientId', isLoggedIn, async (req, res) => {
   try {
     // Obtén el ID del cliente desde los parámetros de la URL
     const clientId = req.params.clientId;
@@ -107,8 +110,8 @@ router.post('/clients/edit/:clientId', async (req, res) => {
       { new: true }
     );
 
-    // Redirecciona a la página de detalles del cliente o a donde desees después de editar el cliente
-    res.redirect(`/clients/details/${updatedClient._id}`);
+    // Corrige el orden de los parámetros en res.redirect
+    res.redirect(302, `/clients/details/${updatedClient._id}`);
   } catch (error) {
     console.error('Error al editar el cliente:', error);
     // Maneja el error de alguna manera, por ejemplo, mostrando un mensaje al usuario
@@ -116,13 +119,15 @@ router.post('/clients/edit/:clientId', async (req, res) => {
   }
 });
 
+
 // Ruta para eliminar un cliente
-router.post('/clients/delete/:clientId', async (req, res) => {
+// Ruta para eliminar un cliente
+router.post('/clients/delete/:clientId', isLoggedIn, async (req, res) => {
   try {
     const clientId = req.params.clientId;
 
-    // Elimina el cliente de la base de datos
-    await Client.findByIdAndRemove(clientId);
+    // Utiliza deleteOne para eliminar el cliente
+    await Client.deleteOne({ _id: clientId });
 
     // Redirecciona a la lista de clientes después de la eliminación
     res.redirect('/clients');
@@ -131,6 +136,7 @@ router.post('/clients/delete/:clientId', async (req, res) => {
     res.render('error', { message: 'Error al eliminar el cliente' });
   }
 });
+
 
 
 module.exports = router;
