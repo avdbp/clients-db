@@ -12,7 +12,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "express-session": "^1.17.3",
-    "mongoose": "^8.0.1",
+    "mongoose": "7.15.5",
     "morgan": "^1.10.0",
     "serve-favicon": "^2.5.0"
   }
