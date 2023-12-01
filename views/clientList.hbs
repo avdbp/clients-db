@@ -1,10 +1,10 @@
 
   <h1>Listado de Clientes</h1>
   <div class="drones-list">
-
   {{#if clients.length}}
     <ul>
       {{#each clients}}
+      <hr>
         <li>
            <a class="nombreLink" href="/clients/details/{{this._id}}">
             <strong>{{this.name}}</strong>
