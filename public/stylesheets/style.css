@@ -199,6 +199,17 @@ h2 {
 width: 500px;
 }
 
+
+/* Estilos para fondos alternados en la lista de clientes */
+.drones-list ul li:nth-child(odd) {
+  background-color: #f2f2f2; /* Color de fondo para clientes impares */
+}
+
+.drones-list ul li:nth-child(even) {
+  background-color: #ffffff; /* Color de fondo para clientes pares */
+}
+
+
 @media only screen and (max-width: 768px) {
   .top-bar {
     padding: 10px;

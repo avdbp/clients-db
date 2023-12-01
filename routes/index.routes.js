@@ -31,13 +31,16 @@ router.post('/clients/create', isLoggedIn, async (req, res) => {
 });
 
 // Ruta para mostrar la lista de clientes
-router.get('/clients', isLoggedIn,  async (req, res) => {
+router.get('/clients', isLoggedIn, async (req, res) => {
   try {
     // Obtiene todos los clientes de la base de datos
     const clients = await Client.find();
 
+    // Invierte el orden del array de clientes
+    const reversedClients = clients.slice().reverse();
+
     // Renderiza la vista con el listado de clientes
-    res.render('clientList', { clients }); // Nombre del archivo HBS para el listado
+    res.render('clientList', { clients: reversedClients }); // Nombre del archivo HBS para el listado
   } catch (error) {
     console.error('Error al obtener el listado de clientes:', error);
     // Maneja el error de alguna manera, por ejemplo, mostrando un mensaje al usuario
@@ -46,7 +49,7 @@ router.get('/clients', isLoggedIn,  async (req, res) => {
 });
 
 // Ruta para mostrar los detalles de un cliente específico
-router.get('/clients/details/:clientId',  async (req, res) => {
+router.get('/clients/details/:clientId', async (req, res) => {
   try {
     // Obtén el ID del cliente desde los parámetros de la URL
     const clientId = req.params.clientId;
@@ -70,7 +73,7 @@ router.get('/clients/details/:clientId',  async (req, res) => {
 });
 
 // Ruta para mostrar el formulario de edición de un cliente
-router.get('/clients/edit/:clientId',  async (req, res) => {
+router.get('/clients/edit/:clientId', async (req, res) => {
   try {
     // Obtén el ID del cliente desde los parámetros de la URL
     const clientId = req.params.clientId;
@@ -93,7 +96,6 @@ router.get('/clients/edit/:clientId',  async (req, res) => {
   }
 });
 
-// Ruta para manejar la actualización de un cliente desde el formulario de edición
 // Ruta para manejar la actualización de un cliente desde el formulario de edición
 router.post('/clients/edit/:clientId', isLoggedIn, async (req, res) => {
   try {
@@ -119,8 +121,6 @@ router.post('/clients/edit/:clientId', isLoggedIn, async (req, res) => {
   }
 });
 
-
-// Ruta para eliminar un cliente
 // Ruta para eliminar un cliente
 router.post('/clients/delete/:clientId', isLoggedIn, async (req, res) => {
   try {
@@ -136,7 +136,5 @@ router.post('/clients/delete/:clientId', isLoggedIn, async (req, res) => {
     res.render('error', { message: 'Error al eliminar el cliente' });
   }
 });
-
-
 
 module.exports = router;
